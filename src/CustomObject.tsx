@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { DoubleSide, BufferGeometry } from "three";
 
 const CustomObject = () => {
-  const bufferGeometryRef = useRef<BufferGeometry>(null!);
+  const geometryRef = useRef<BufferGeometry>(null!);
 
   // Each triangle has 3 vertices
   const verticesCount = 10 * 3;
@@ -19,15 +19,15 @@ const CustomObject = () => {
   }, []);
 
   useEffect(() => {
-    bufferGeometryRef.current.computeVertexNormals();
+    geometryRef.current.computeVertexNormals();
   }, []);
 
   return (
     <mesh>
-      <bufferGeometry ref={bufferGeometryRef}>
+      <bufferGeometry ref={geometryRef}>
         <bufferAttribute attach="attributes-position" count={verticesCount} itemSize={3} array={positions} />
       </bufferGeometry>
-      <meshBasicMaterial color="red" side={DoubleSide} />
+      <meshStandardMaterial color="red" side={DoubleSide} />
     </mesh>
   );
 };

@@ -22,6 +22,11 @@ export default function Experience() {
   useFrame((state, delta) => {
     cube.current.rotation.y += delta;
     // carrousel.current.rotation.y += delta;
+
+    // const angle = state.clock.elapsedTime;
+    // state.camera.position.x = Math.sin(angle) * 8;
+    // state.camera.position.z = Math.cos(angle) * 8;
+    // state.camera.lookAt(0, 0, 0);
   });
 
   return (
@@ -58,3 +63,9 @@ export default function Experience() {
 // MESH:
 // meshStandardMaterial reacts to light
 // meshBasicMaterial is just a color and has no interaction with lights
+
+// ANIMATIONS:
+// To make the camera rotate around our objects, we need to update
+// the camera position both on the x and z axis use the state from useFrame,
+// to get access to elapsedTime and use sine and cosine to achive the desired result
+// remember to update the camera, directing it to the center of the scene throught the lookAt method

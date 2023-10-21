@@ -4,24 +4,21 @@ import { Canvas } from "@react-three/fiber";
 import "./index.css";
 import Experience from "./Experience";
 import { ACESFilmicToneMapping, SRGBColorSpace } from "three";
-import { Leva } from "leva";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <Leva collapsed />
-    <Canvas
-      dpr={[1, 2]}
-      gl={{ antialias: true, toneMapping: ACESFilmicToneMapping, outputColorSpace: SRGBColorSpace }}
-      camera={{
-        fov: 60,
-        near: 0.1,
-        far: 200,
-        position: [3, 2, 6],
-      }}
-    >
-      <Experience />
-    </Canvas>
-  </React.StrictMode>
+  <Canvas
+    // shadows
+    dpr={[1, 2]}
+    gl={{ antialias: true, toneMapping: ACESFilmicToneMapping, outputColorSpace: SRGBColorSpace }}
+    camera={{
+      fov: 60,
+      near: 0.1,
+      far: 200,
+      position: [3, 2, 6],
+    }}
+  >
+    <Experience />
+  </Canvas>
 );
 
 // By default we're using the perspective camera, which means that if something is furhest from

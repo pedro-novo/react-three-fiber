@@ -1,5 +1,6 @@
-import { AccumulativeShadows, OrbitControls, RandomizedLight, useHelper } from "@react-three/drei";
+import { ContactShadows, Environment, OrbitControls, Stage, useHelper } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
+import { useControls } from "leva";
 import { Perf } from "r3f-perf";
 import { useRef } from "react";
 import { DirectionalLight, DirectionalLightHelper, Mesh } from "three";
@@ -16,12 +17,55 @@ export default function Experience() {
     cube.current.rotation.y += delta * 0.2;
   });
 
+  const { color, opacity, blur } = useControls("contact shadows", {
+    color: "#4b2709",
+    opacity: { value: 0.4, min: 0, max: 1 },
+    blur: { value: 2.8, min: 0, max: 10 },
+  });
+
+  const { sunPosition } = useControls("sky", {
+    sunPosition: { value: [1, 2, 3] },
+  });
+
+  const { envMapIntensity, envMapHeight, envMapRadius, envMapScale } = useControls("environment map", {
+    envMapIntensity: { value: 7, min: 0, max: 12 },
+    envMapHeight: { value: 7, min: 0, max: 100 },
+    envMapRadius: { value: 28, min: 10, max: 1000 },
+    envMapScale: { value: 100, min: 10, max: 1000 },
+  });
+
   return (
     <>
       {/* <BakeShadows /> */}
       {/* <SoftShadows size={25} samples={10} focus={0} /> */}
 
-      <color args={["ivory"]} attach="background" />
+      {/* <Environment
+        // background
+        // files={[
+        //   "./environmentMaps/2/px.jpg",
+        //   "./environmentMaps/2/nx.jpg",
+        //   "./environmentMaps/2/py.jpg",
+        //   "./environmentMaps/2/ny.jpg",
+        //   "./environmentMaps/2/pz.jpg",
+        //   "./environmentMaps/2/nz.jpg",
+        // ]}
+        // files="./environmentMaps/the_sky_is_on_fire_2k.hdr"
+        preset="sunset"
+        ground={{
+          height: envMapHeight,
+          radius: envMapRadius,
+          scale: envMapScale,
+        }}
+      > */}
+      {/* <color args={["#000000"]} attach="background" />
+        <Lightformer position-z={-5} scale={10} color="red" intensity={10} form="ring" /> */}
+      {/* <mesh position-z={-5} scale={10}>
+          <planeGeometry />
+          <meshBasicMaterial color={[100, 0, 0]} />
+        </mesh> */}
+      {/* </Environment> */}
+
+      {/* <color args={["ivory"]} attach="background" /> */}
 
       <Perf position="top-left" />
 
@@ -37,9 +81,21 @@ export default function Experience() {
       >
         <RandomizedLight position={[1, 2, 3]} amount={8} radius={1} ambient={0.5} intensity={1} bias={0.001} />
       </AccumulativeShadows> */}
-      <directionalLight
+
+      {/* <ContactShadows
+        position={[0, 0, 0]}
+        scale={10}
+        resolution={512}
+        far={5} // how far does an object should cast a shadow
+        color={color}
+        blur={blur}
+        opacity={opacity}
+        frames={1} // to bake the shadow
+      /> */}
+
+      {/* <directionalLight
         ref={directionalLight}
-        position={[1, 2, 3]}
+        position={sunPosition}
         intensity={1.5}
         castShadow
         shadow-mapSize={[1024, 1024]}
@@ -52,20 +108,43 @@ export default function Experience() {
       />
       <ambientLight intensity={0.5} />
 
-      <mesh castShadow position-x={-2}>
+      <Sky sunPosition={sunPosition} /> */}
+
+      {/* <mesh castShadow position-x={-2} position-y={1}>
         <sphereGeometry />
-        <meshStandardMaterial color="orange" />
+        <meshStandardMaterial color="orange" envMapIntensity={envMapIntensity} />
       </mesh>
 
-      <mesh ref={cube} castShadow rotation-y={Math.PI * 0.25} scale={1.5} position-x={2}>
+      <mesh ref={cube} castShadow rotation-y={Math.PI * 0.25} scale={1.5} position-x={2} position-y={1}>
         <boxGeometry />
-        <meshStandardMaterial color="mediumpurple" />
-      </mesh>
-
-      <mesh position-y={-1} rotation-x={-Math.PI * 0.5} scale={10}>
+        <meshStandardMaterial color="mediumpurple" envMapIntensity={envMapIntensity} />
+      </mesh> */}
+      {/* 
+      <mesh position-y={0} rotation-x={-Math.PI * 0.5} scale={10}>
         <planeGeometry />
-        <meshStandardMaterial color="greenyellow" />
-      </mesh>
+        <meshStandardMaterial color="greenyellow" envMapIntensity={envMapIntensity} />
+      </mesh> */}
+
+      <Stage
+        shadows={{
+          type: "contact",
+          opacity: 0.2,
+          blur: 3,
+        }}
+        environment="sunset"
+        preset="portrait"
+        intensity={2}
+      >
+        <mesh castShadow position-x={-2} position-y={1}>
+          <sphereGeometry />
+          <meshStandardMaterial color="orange" envMapIntensity={envMapIntensity} />
+        </mesh>
+
+        <mesh ref={cube} castShadow rotation-y={Math.PI * 0.25} scale={1.5} position-x={2} position-y={1}>
+          <boxGeometry />
+          <meshStandardMaterial color="mediumpurple" envMapIntensity={envMapIntensity} />
+        </mesh>
+      </Stage>
     </>
   );
 }
@@ -155,4 +234,27 @@ temporal
 
 // CONTACT SHADOWS
 // Doesn't rely on the default shadow system of Three.js so we can remove
-// shadows within canvas.
+// shadows within canvas. It works without a light and only on a plane.
+
+// SKY
+// This class is physics-based and tries to reproduce a realistic sky according to various parameters like
+// mieCoefficient, mieDirectionalG, rayleigh and turbidity.
+// To position the sun on the screen we should ALWAYS use spherical coordinates
+// because we must keep the sun far away from the scene.
+
+// ENVIRONMENT MAP
+// Instead of using 6 pictures to represent our environment, we can use
+// just one. Its a 360º photo in High Dynamic Range in order to make the
+// illumination data more accurate.
+
+// CUSTOM ENVIRONMENT
+// Instead of using a mesh to illuminate the scene, we should use a
+// <Lightformer />
+
+// GROUND
+// By adding the ground attribute, the projection of the environment
+// will make it look as if the floor underneath the objects is near
+
+// STAGE
+// Used for a default good looking setting wih minimal configuration
+//

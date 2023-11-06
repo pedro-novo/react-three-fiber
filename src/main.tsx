@@ -8,15 +8,15 @@ import { ACESFilmicToneMapping, SRGBColorSpace } from "three";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Canvas
-    shadows
-    flat
-    dpr={[1, 2]}
-    gl={{ antialias: true, toneMapping: ACESFilmicToneMapping, outputColorSpace: SRGBColorSpace }}
+    // shadows
+    // flat
+    // dpr={[1, 2]}
+    // gl={{ antialias: true, toneMapping: ACESFilmicToneMapping, outputColorSpace: SRGBColorSpace }}
     camera={{
-      fov: 60,
+      fov: 45,
       near: 0.1,
-      far: 200,
-      position: [3, 2, 6],
+      far: 2000,
+      position: [-3, 1.5, 4],
     }}
   >
     <Experience />

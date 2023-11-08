@@ -3,20 +3,19 @@ import ReactDOM from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
 import "./index.css";
 import Experience from "./Experience";
-import { ACESFilmicToneMapping, SRGBColorSpace } from "three";
 // import { ACESFilmicToneMapping, SRGBColorSpace } from "three";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Canvas
-    // shadows
     // flat
     // dpr={[1, 2]}
     // gl={{ antialias: true, toneMapping: ACESFilmicToneMapping, outputColorSpace: SRGBColorSpace }}
+    shadows
     camera={{
       fov: 45,
       near: 0.1,
-      far: 2000,
-      position: [-3, 1.5, 4],
+      far: 200,
+      position: [4, 2, 10],
     }}
   >
     <Experience />

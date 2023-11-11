@@ -3,23 +3,37 @@ import ReactDOM from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
 import "./index.css";
 import Experience from "./Experience";
+import { KeyboardControls } from "@react-three/drei";
 // import { ACESFilmicToneMapping, SRGBColorSpace } from "three";
 
+// use KeyW instead of w, this way even if the keyboard layout is
+// different, it will use the position of the KeyW instead of the real
+// w key (in a AZERTY layout Z will move forward).
+const keyMaps = [
+  { name: "forward", keys: ["ArrowUp", "KeyW"] },
+  { name: "backward", keys: ["ArrowDown", "KeyS"] },
+  { name: "leftward", keys: ["ArrowLeft", "KeyA"] },
+  { name: "rightward", keys: ["ArrowRight", "KeyD"] },
+  { name: "jump", keys: ["Space"] },
+];
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <Canvas
-    // flat
-    // dpr={[1, 2]}
-    // gl={{ antialias: true, toneMapping: ACESFilmicToneMapping, outputColorSpace: SRGBColorSpace }}
-    shadows
-    camera={{
-      fov: 45,
-      near: 0.1,
-      far: 200,
-      position: [4, 2, 10],
-    }}
-  >
-    <Experience />
-  </Canvas>
+  <KeyboardControls map={keyMaps}>
+    <Canvas
+      // flat
+      // dpr={[1, 2]}
+      // gl={{ antialias: true, toneMapping: ACESFilmicToneMapping, outputColorSpace: SRGBColorSpace }}
+      shadows
+      camera={{
+        fov: 45,
+        near: 0.1,
+        far: 200,
+        position: [4, 2, 10],
+      }}
+    >
+      <Experience />
+    </Canvas>
+  </KeyboardControls>
 );
 
 // By default we're using the perspective camera, which means that if something is furhest from

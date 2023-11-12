@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import "./index.css";
 import Experience from "./Experience";
 import { KeyboardControls } from "@react-three/drei";
+import GameInterface from "./game/components/game-interface/game-interface";
 // import { ACESFilmicToneMapping, SRGBColorSpace } from "three";
 
 // use KeyW instead of w, this way even if the keyboard layout is
@@ -33,6 +34,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     >
       <Experience />
     </Canvas>
+    <GameInterface />
   </KeyboardControls>
 );
 

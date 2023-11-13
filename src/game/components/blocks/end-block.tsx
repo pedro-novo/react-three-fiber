@@ -1,7 +1,7 @@
 import React from "react";
 import { Vector3 } from "three";
 import { BlockProps, boxGeometry, startEndBlockMaterial } from "../../constants/constants";
-import { useGLTF } from "@react-three/drei";
+import { Text, useGLTF } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 
 const EndBlock = ({ position = new Vector3(0, 0, 0) }: BlockProps) => {
@@ -12,6 +12,18 @@ const EndBlock = ({ position = new Vector3(0, 0, 0) }: BlockProps) => {
   return (
     <>
       <group position={position}>
+        <Text
+          scale={1}
+          maxWidth={0.25}
+          lineHeight={0.75}
+          textAlign="right"
+          position={[0, 2.25, 2]}
+          rotation-y={-0.25}
+          font="./bangers-v20-latin-regular.woff"
+        >
+          Finish
+          <meshBasicMaterial toneMapped={false} />
+        </Text>
         <mesh
           geometry={boxGeometry}
           material={startEndBlockMaterial}

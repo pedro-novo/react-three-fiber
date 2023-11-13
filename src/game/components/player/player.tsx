@@ -3,12 +3,16 @@ import { useFrame } from "@react-three/fiber";
 import { RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
 import { useKeyboardControls } from "@react-three/drei";
 import { Vector3 } from "three";
+import { useGame } from "../../../store/use-game";
 
 const Player = () => {
-  console.log("jump1");
   const ball = useRef<RapierRigidBody>(null!);
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const { rapier, world } = useRapier();
+  const start = useGame((state) => state.start);
+  const end = useGame((state) => state.end);
+  const restart = useGame((state) => state.restart);
+  const blocksCount = useGame((state) => state.blocksCount);
 
   const [smoothedCameraPosition] = useState(() => new Vector3(10, 10, 10));
   const [smoothedCameraTarget] = useState(() => new Vector3());
@@ -27,15 +31,36 @@ const Player = () => {
     ball.current.applyImpulse({ x: 0, y: 0.5, z: 0 }, false);
   };
 
+  const reset = () => {
+    ball.current.setTranslation({ x: 0, y: 1, z: 0 }, false);
+    ball.current.setLinvel({ x: 0, y: 0, z: 0 }, false);
+    ball.current.setAngvel({ x: 0, y: 0, z: 0 }, false);
+  };
+
   useEffect(() => {
-    const unsubscribeJump = subscribeKeys(
-      // we list to this value
-      (state) => state.jump,
-      // if it changes we run this
-      (value) => value && jump()
+    const unsubscribeReset = useGame.subscribe(
+      (state) => state.phase,
+      (value) => {
+        if (value === "ready") reset();
+      }
     );
 
-    return () => unsubscribeJump();
+    const unsubscribeJump = subscribeKeys(
+      (state) => state.jump,
+      (value) => {
+        if (value) jump();
+      }
+    );
+
+    const unsubscribeAny = subscribeKeys(() => {
+      start();
+    });
+
+    return () => {
+      unsubscribeReset();
+      unsubscribeJump();
+      unsubscribeAny();
+    };
   }, []);
 
   useFrame(({ camera }, delta) => {
@@ -85,6 +110,15 @@ const Player = () => {
 
     camera.position.copy(smoothedCameraPosition);
     camera.lookAt(smoothedCameraTarget);
+
+    // === PHASES ===
+    if (ballPosition.z < -(blocksCount * 4 + 2)) {
+      end();
+    }
+
+    if (ballPosition.y < -4) {
+      restart();
+    }
   });
 
   return (
@@ -127,3 +161,8 @@ export default Player;
 // SHADOWS
 // In order to fix the shadows (they're not being rendered everywhere)
 // we will make the light also follow the ball position.
+
+// HANDLING PHASES
+// When resetting the game we not only need to reset the ball
+// position (setTranslation) but also need to remove any translation
+// force (setLinvel) and remove any angular force (setAngvel)

@@ -13,9 +13,14 @@ type BlockTypeArray = (({ position }: BlockProps) => React.ReactNode)[];
 interface LevelProps {
   count?: number;
   blockTypes?: BlockTypeArray;
+  seed?: number;
 }
 
-const Level = ({ count = 5, blockTypes = [SpinnerBlock, LimboBlock, AxeBlock] }: LevelProps) => {
+const Level = ({
+  count = 5,
+  blockTypes = [SpinnerBlock, LimboBlock, AxeBlock],
+  seed = 0,
+}: LevelProps) => {
   const blocks = useMemo(() => {
     const blocks: BlockTypeArray = [];
 
@@ -25,7 +30,7 @@ const Level = ({ count = 5, blockTypes = [SpinnerBlock, LimboBlock, AxeBlock] }:
     }
 
     return blocks;
-  }, [count, blockTypes]);
+  }, [count, blockTypes, seed]);
 
   return (
     <>
